@@ -41,8 +41,8 @@ The popular NES game
 |Stage 35		|★★		|4 Power Tanks	6 Fast Tanks	10 Armor Tanks	N/A				|
 
 ##Stages Gallery
-(https://github.com/wildalmighty/BattleCityJs/blob/master/img/stages_thumbs/Battle_City_Stage01.png "Stage 1")
-(https://github.com/wildalmighty/BattleCityJs/blob/master/img/stages_thumbs/Battle_City_Stage02.png "Stage 2")
-(https://github.com/wildalmighty/BattleCityJs/blob/master/img/stages_thumbs/Battle_City_Stage03.png "Stage 3")
-(https://github.com/wildalmighty/BattleCityJs/blob/master/img/stages_thumbs/Battle_City_Stage04.png "Stage 4")
-(https://github.com/wildalmighty/BattleCityJs/blob/master/img/stages_thumbs/Battle_City_Stage05.png "Stage 5")
+(https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage01.png "Stage 1")
+(https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage02.png "Stage 2")
+(https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage03.png "Stage 3")
+(https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage04.png "Stage 4")
+(https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage05.png "Stage 5")
