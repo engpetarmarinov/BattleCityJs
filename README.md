@@ -42,7 +42,6 @@ The popular NES game
 
 ||Stages Gallery||
 |:---:|:---:|:---:|
-
 |![Stage 1](https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage01.png "Stage 1")|![Stage 2](https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage02.png "Stage 2")|![Stage 3](https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage03.png "Stage 3")|
 |![Stage 4](https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage04.png "Stage 4")|![Stage 5](https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage05.png "Stage 5")|![Stage 6](https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage06.png "Stage 6")|
 |![Stage 7](https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage07.png "Stage 7")|![Stage 8](https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage08.png "Stage 8")|![Stage 9](https://raw.github.com/wildalmighty/BattleCityJs/master/img/stages_thumbs/Battle_City_Stage09.png "Stage 9")|
