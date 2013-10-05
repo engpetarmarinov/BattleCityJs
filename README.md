@@ -1,7 +1,7 @@
 #Battle city
 The popular NES game
 
-#Stages
+##Stages
 Stage			Difficulty	Tank Groups
 Stage 1			★		18 Basic Tanks	2 Fast Tanks	N/A				N/A
 Stage 2			★		2 Armor Tanks	4 Fast Tanks	14 Basic Tanks	N/A
