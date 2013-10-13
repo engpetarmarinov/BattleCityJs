@@ -1,22 +1,19 @@
 define([
 	'jquery',
 	'crafty',
-	'components'
-], function($,Crafty,C) {
-	var grid = {
-		width: 13,
-		height: 13,
-		tile: {
-			width: 32,
-			height: 32,
-		}
-	}
+	'components',
+	'map',
+	'scenes'
+], function($,Crafty,C,Map,Scenes) {
 	var start = function() {
-		Crafty.init(mapConfig.width, mapConfig.height);
-		Crafty.background('rgb(0,0,0)');
-		Crafty.e('Tank').at();
+		//Init
+		Crafty.init(Map.width(), Map.height());
+		Crafty.background(Map.bgcolor);
+		console.log('bg color');
+		Crafty.scene('Loading');
+//		Crafty.scene('Game');
 	};
-	return {		
+	return {
 		start: start
 	};
 });
