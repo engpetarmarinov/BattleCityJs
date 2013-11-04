@@ -1,3 +1,6 @@
+/**
+ * Defines Crafty components
+ */
 define([
 	'jquery',
 	'crafty',
@@ -38,8 +41,8 @@ define([
 	
 	//Tank component
 	Crafty.c('Tank', {
-		init: function() {
-			this.requires('Actor, Multiway, Collision, tank1_s1, SpriteAnimation')
+		init: function() {			
+			this.requires('Actor, Multiway, Collision, SpriteAnimation, tank1_s1')
 				.attr({
 					w: Map.grid.tile.width,
 					h: Map.grid.tile.height
@@ -48,27 +51,29 @@ define([
 				.stopOnSolids()
 				//setup animation
 				//TODO: debug sprite animation
-				.animate('TankMoveUp', 0, 0, 2)
-				.animate('TankMoveRight', 1, 0, 2)
-				.animate('TankMoveDown', 2, 0, 2)
-				.animate('TankMoveLeft', 3, 0, 2);
+				.animate('TankMoveUp', 0, 3, 0)
+				.animate('TankMoveRight', 0, 0, 0)
+				.animate('TankMoveDown', 0, 1, 0)
+				.animate('TankMoveLeft', 0, 2, 0);
+		
+			var that = this;
 			// Watch for a change of direction and switch sprites
 			this.bind('NewDirection', function(data) {
 				if (data.x > 0) {
 					 // start animation
-					this.animate('TankMoveRight',24);
+					that.animate('TankMoveRight',1,-1);					
 					console.log('move right');
 				} else if (data.x < 0) {
 					// start animation
-					this.animate('TankMoveLeft',24);
+					that.animate('TankMoveLeft',1,-1);
 					console.log('move left');
 				} else if (data.y > 0) {
 					 // start animation
-					this.animate('TankMoveDown',24);
+					that.animate('TankMoveDown',1,-1);					
 					console.log('move down');
 				} else if (data.y < 0) {
 					 // start animation
-					this.animate('TankMoveUp',24);
+					that.animate('TankMoveUp',1,-1);
 					console.log('move  up');
 				} else {
 					console.log('stop');
@@ -79,7 +84,6 @@ define([
 		//  this entity hits an entity with the "Solid" component
 		stopOnSolids: function() {
 		  this.onHit('Solid', this.stopMovement);
-
 		  return this;
 		},
 		// Stops the movement

@@ -3,6 +3,7 @@ define([
 	'crafty',
 	'map'
 ], function($,Crafty,Map) {
+	
 	//Loading Scene
 	Crafty.scene('Loading', function() {
 		console.log('loading scene');
@@ -15,12 +16,12 @@ define([
 			.textColor('#FFFFFF')
 			.textFont({ size: '30px', weight: 'bold' })
 			.unselectable();
-	  // Load our sprite map image
+		// Load our sprite map image
 		Crafty.load([
 			'img/tanks/tank1-s1.png',
 		], function() {
-			Crafty.sprite(32, 'img/tanks/tank1-s1.png', {
-				tank1_s1: [0, 0]
+			Crafty.sprite(32, 32, 'img/tanks/tank1-s1.png', {
+				tank1_s1: [0, 3]
 			},0,0);
 		});
 		this.startGame = function() {
@@ -30,6 +31,7 @@ define([
 	}, function() {
 		this.unbind('KeyDown', this.startGame);
 	});
+	
 	//Game Scene
 	Crafty.scene('Game', function() {
 		//init the map
