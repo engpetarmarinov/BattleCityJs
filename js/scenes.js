@@ -21,7 +21,7 @@ define([
 			'img/tanks/tank1-s1.png',
 		], function() {
 			Crafty.sprite(32, 32, 'img/tanks/tank1-s1.png', {
-				tank1_s1: [0, 3]
+				spr_tank1_s1: [0, 3]
 			},0,0);
 		});
 		this.startGame = function() {

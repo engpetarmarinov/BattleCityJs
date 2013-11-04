@@ -6,7 +6,13 @@ define([
 	'crafty',
 	'map'
 ], function($, Crafty,Map) {
-
+	//Border for the map
+	//TODO: maybe a smarter desicion is possible
+	Crafty.c('Borders', {
+		init: function() {
+			this.requires('2D, Canvas, Solid');			
+		}
+	});
 	// The Grid component allows an element to be located on a grid of tiles
 	Crafty.c('Grid', {
 		init: function() {
@@ -35,14 +41,14 @@ define([
 	Crafty.c('Bricks', {
 		init: function() {
 			this.requires('Actor, Color, Solid')
-				.color('#fff');;
+				.color('#fff');
 		}
 	});
 	
 	//Tank component
 	Crafty.c('Tank', {
-		init: function() {			
-			this.requires('Actor, Multiway, Collision, SpriteAnimation, tank1_s1')
+		init: function() {
+			this.requires('Actor, Multiway, Collision, SpriteAnimation, spr_tank1_s1')
 				.attr({
 					w: Map.grid.tile.width,
 					h: Map.grid.tile.height
@@ -50,7 +56,6 @@ define([
 				.multiway(2, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180})				
 				.stopOnSolids()
 				//setup animation
-				//TODO: debug sprite animation
 				.animate('TankMoveUp', 0, 3, 0)
 				.animate('TankMoveRight', 0, 0, 0)
 				.animate('TankMoveDown', 0, 1, 0)

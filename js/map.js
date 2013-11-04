@@ -22,6 +22,37 @@ define([
 	}
 	function init(){
 		console.log('init map');
+		//borders		
+		//left border
+		Crafty.e('Borders').attr({
+			w: 0,
+			h: grid.height * grid.tile.height,
+			x: grid.width * grid.tile.width,
+			y: 0
+		});
+		//bottom border
+		Crafty.e('Borders').attr({
+			w: grid.width * grid.tile.width,
+			h: 0,
+			x: 0,
+			y: grid.height * grid.tile.height
+		});
+		//right border
+		Crafty.e('Borders').attr({
+			w: 0,
+			h: grid.height * grid.tile.height,
+			x: 0,
+			y: 0
+		});
+		//top border
+		Crafty.e('Borders').attr({
+			w: grid.width * grid.tile.width,
+			h: 0,
+			x: 0,
+			y: 0
+		});
+		
+		//random block of bricks
 		var max_bricks = 5;
 		for (var x = 0; x < grid.width; x++) {
 			for (var y = 0; y < grid.height; y++) {
