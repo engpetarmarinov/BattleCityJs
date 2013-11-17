@@ -16,13 +16,24 @@ define([
 			.textColor('#FFFFFF')
 			.textFont({ size: '30px', weight: 'bold' })
 			.unselectable();
-		// Load our sprite map image
+		// Crafty loader
 		Crafty.load([
 			'img/tanks/tank1-s1.png',
+			'img/tanks/bullet.png'
 		], function() {
+			//when loaded	
+			//tank star 1 sprite
 			Crafty.sprite(32, 32, 'img/tanks/tank1-s1.png', {
 				spr_tank1_s1: [0, 3]
 			},0,0);
+			//bullet sprite
+			Crafty.sprite(8, 8, 'img/tanks/bullet.png', {
+				spr_bullet: [0, 0]
+			},0,0);
+		}, function (e) {
+			//progress
+		}, function (e) {
+			//uh oh, error loading
 		});
 		this.startGame = function() {
 			Crafty.scene('Game');

@@ -6,6 +6,9 @@ define([
 	'crafty',
 	'map'
 ], function($, Crafty,Map) {
+	var Config = {
+		fireKey: 32 //Space
+	}
 	//Border for the map
 	//TODO: maybe a smarter desicion is possible
 	Crafty.c('Borders', {
@@ -47,8 +50,11 @@ define([
 	
 	//Tank component
 	Crafty.c('Tank', {
-		init: function() {
-			this.requires('Actor, Multiway, Collision, SpriteAnimation, spr_tank1_s1')
+		directions: ['up','right','down','left'],
+		currentDirection: 'up',
+		init: function () {
+			var tankComponent = this;
+			tankComponent.requires('Actor, Multiway, Collision, SpriteAnimation, spr_tank1_s1')
 				.attr({
 					w: Map.grid.tile.width,
 					h: Map.grid.tile.height
@@ -59,45 +65,129 @@ define([
 				.animate('TankMoveUp', 0, 3, 0)
 				.animate('TankMoveRight', 0, 0, 0)
 				.animate('TankMoveDown', 0, 1, 0)
-				.animate('TankMoveLeft', 0, 2, 0);
-		
-			var that = this;
+				.animate('TankMoveLeft', 0, 2, 0);		
+			
 			// Watch for a change of direction and switch sprites
-			this.bind('NewDirection', function(data) {
+			tankComponent.bind('NewDirection', function(data) {
 				if (data.x > 0) {
 					 // start animation
-					that.animate('TankMoveRight',1,-1);					
+					tankComponent.animate('TankMoveRight',1,-1);
+					//set current direction of the tank
+					tankComponent.currentDirection = tankComponent.directions[1];
 					console.log('move right');
 				} else if (data.x < 0) {
 					// start animation
-					that.animate('TankMoveLeft',1,-1);
+					tankComponent.animate('TankMoveLeft',1,-1);
+					tankComponent.currentDirection = tankComponent.directions[3];
 					console.log('move left');
 				} else if (data.y > 0) {
 					 // start animation
-					that.animate('TankMoveDown',1,-1);					
+					tankComponent.animate('TankMoveDown',1,-1);
+					tankComponent.currentDirection = tankComponent.directions[2];
 					console.log('move down');
 				} else if (data.y < 0) {
 					 // start animation
-					that.animate('TankMoveUp',1,-1);
+					tankComponent.animate('TankMoveUp',1,-1);
+					tankComponent.currentDirection = tankComponent.directions[0];
 					console.log('move  up');
 				} else {
 					console.log('stop');
 				}
 			});
+			//bind bullet firing
+			Crafty.bind('KeyDown', function (e){
+				if(e.keyCode === Config.fireKey){//space
+					tankComponent.fire();
+				}
+			});
 		},
 		// Registers a stop-movement function to be called when
 		//  this entity hits an entity with the "Solid" component
-		stopOnSolids: function() {
-		  this.onHit('Solid', this.stopMovement);
+		stopOnSolids: function () {
+		  this.onHit('Solid', this.stopMovement);		  
 		  return this;
 		},
 		// Stops the movement
-		stopMovement: function() {
+		stopMovement: function () {
 		  this._speed = 0;
 		  if (this._movement) {
 			this.x -= this._movement.x;
 			this.y -= this._movement.y;
 		  }
+		},
+		//fire a bullet
+		fire: function () {
+			Crafty.e('Bullet').fire(this.x,this.y,this.currentDirection);
+		}
+	});
+	//Tank Bullet
+	Crafty.c('Bullet', {
+		init: function () {
+			this.requires('2D, Canvas, Collision, SpriteAnimation, spr_bullet')
+			.attr({
+				w: 8,
+				h: 8
+			})
+			.explodeOnSolids()
+			//setup animation
+			.animate('BulletMoveUp', 0, 0, 0)
+			.animate('BulletMoveRight', 0, 1, 0)
+			.animate('BulletMoveDown', 0, 2, 0)
+			.animate('BulletMoveLeft', 0, 3, 0);
+		},
+		fire: function(x, y, directionString) {
+			var bulletComponent = this;
+			var offsetX = 0, offsetY = 0;
+			var dir;
+			if (x === undefined || y === undefined || directionString === undefined) {
+				throw 'Bullet function fire: requires x,y and direction params.';
+				return false;
+			} else {
+				if(directionString === 'up'){
+					dir = 'n';
+					offsetX = Map.grid.tile.width / 2 - bulletComponent.w / 2;
+				} else if(directionString === 'right'){
+					dir = 'e';
+					offsetX = Map.grid.tile.width;
+					offsetY =Map.grid.tile.height / 2 - bulletComponent.h / 2;
+				} else if(directionString === 'down'){
+					dir = 's';
+					offsetX = Map.grid.tile.width / 2 - bulletComponent.w / 2;
+					offsetY = Map.grid.tile.height;
+				} else if(directionString === 'left'){
+					dir = 'w';
+					offsetY = Map.grid.tile.height / 2 - bulletComponent.h / 2;
+				}
+				
+				//place bullet at position
+				bulletComponent.attr({
+					x: (x + offsetX), 
+					y: (y + offsetY)
+				});
+				
+				// start sprite animation
+				bulletComponent.animate('BulletMove'+ directionString.charAt(0).toUpperCase() + directionString.slice(1) ,1,-1);				
+				//start moving to direction
+				//TODO: better flying of the bullet
+				setInterval(function (){
+					bulletComponent.move(dir,6);
+				}, 20);
+				return this;
+			}
+		},
+		explodeOnSolids: function () {
+			var bulletComponent = this;
+			this.onHit('Bricks', function(obj){
+				if(typeof obj[0].obj.destroy === 'function'){
+					obj[0].obj.destroy();
+					bulletComponent.explode();
+				}
+			});
+			this.onHit('Solid', this.explode);
+			return this;
+		},
+		explode: function (){
+			this.destroy();
 		}
 	});
 	//Item to be collected
