@@ -19,7 +19,8 @@ define([
 		// Crafty loader
 		Crafty.load([
 			'img/tanks/tank1-s1.png',
-			'img/tanks/bullet.png'
+			'img/tanks/bullet.png',
+			'img/small-explosion.png'
 		], function() {
 			//when loaded	
 			//tank star 1 sprite
@@ -29,6 +30,10 @@ define([
 			//bullet sprite
 			Crafty.sprite(8, 8, 'img/tanks/bullet.png', {
 				spr_bullet: [0, 0]
+			},0,0);
+			//bullet explosion
+			Crafty.sprite(32, 32, 'img/small-explosion.png', {
+				spr_small_explosion: [0, 0]
 			},0,0);
 		}, function (e) {
 			//progress

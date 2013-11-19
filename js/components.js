@@ -187,7 +187,34 @@ define([
 			return this;
 		},
 		explode: function (){
+			Crafty.e('Explosion').explode(this.x,this.y);
 			this.destroy();
+		}
+	});
+	//small explosion
+	Crafty.c('Explosion', {
+		init: function () {
+			this.requires('2D, Canvas, SpriteAnimation, spr_small_explosion')
+			.attr({
+				w: 32,
+				h: 32				
+			})
+			//setup animation
+			.animate('Explode', 0, 0, 0);
+		},
+		explode: function (x,y) {
+			var explosion = this;
+			var offsetX = explosion.w / 2 - 4;
+			var offsetY = explosion.h / 2 - 4;
+			this.attr({
+				x: (x - offsetX),
+				y: (y - offsetY)
+			});
+			// start sprite animation
+			explosion.animate('Explode' ,1, 1);
+			setTimeout(function (){
+				explosion.destroy();
+			},100);
 		}
 	});
 	//Item to be collected
