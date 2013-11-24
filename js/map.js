@@ -12,14 +12,6 @@ define([
 			height: 32,
 		}
 	};
-	// A 2D array to keep track of all occupied tiles
-	var occupied = new Array(grid.width);
-	for (var i = 0; i < grid.width; i++) {
-	  occupied[i] = new Array(grid.height);
-	  for (var y = 0; y < grid.height; y++) {
-		occupied[i][y] = false;
-	  }
-	}
 	function init(){
 		console.log('init map');
 		//borders		
@@ -51,20 +43,14 @@ define([
 			x: 0,
 			y: 0
 		});
+		//TODO: load X level
 		
-		//random block of bricks
-		var max_bricks = 5;
-		for (var x = 0; x < grid.width; x++) {
-			for (var y = 0; y < grid.height; y++) {
-				if (Math.random() < 0.02 && !occupied[x][y]) {
-					Crafty.e('Bricks').at(x, y);
-					occupied[x][y]=true;
-					if (Crafty('Bricks').length >= max_bricks) {
-						return;
-					}
-				}
-			}
-		}
+		//level 1
+		var currentStage = 1;
+		require(['stages/stage'+currentStage], function (stage){
+			stage.init();
+		});
+		
 	}
 	
 	return {

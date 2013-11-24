@@ -7,13 +7,13 @@ define([
 	'map'
 ], function($, Crafty,Map) {
 	var Config = {
-		fireKey: 32 //Space
+		fireKey: 32 //Space Key
 	}
 	//Border for the map
 	//TODO: maybe a smarter desicion is possible
 	Crafty.c('Borders', {
 		init: function() {
-			this.requires('2D, Canvas, Solid');			
+			this.requires('2D, Canvas, Solid');
 		}
 	});
 	// The Grid component allows an element to be located on a grid of tiles
@@ -25,36 +25,157 @@ define([
 			});
 		},
 		// Locate this entity at the given position on the grid
-		at: function(x, y) {
-			if (x === undefined && y === undefined) {
-				return {x: this.x / Map.grid.tile.width, y: this.y / Game.map_grid.tile.height}
+		at: function(x, y, offsetX, offsetY) {
+			if(offsetX === undefined) offsetX = 0;
+			if(offsetY === undefined) offsetY = 0;
+			if(x === undefined && y === undefined) {
+				return {x: this.x / Map.grid.tile.width + offsetX, y: this.y / Game.map_grid.tile.height + offsetY}
 			} else {
-				this.attr({x: x * Map.grid.tile.width, y: y * Map.grid.tile.height});
+				this.attr({x: x * Map.grid.tile.width + offsetX, y: y * Map.grid.tile.height + offsetY});
 				return this;
 			}
 		}
 	});
-	// An "Actor" is an entity that is drawn in 2D on canvas via our logical coordinate grid
-	Crafty.c('Actor', {
+	// Block
+	Crafty.c('Block', {
 		init: function() {
-			this.requires('2D, Canvas, Grid');
+			this.requires('2D, Grid');
+		},
+		place: function (type, cols ,rows){
+			if(typeof(cols) === 'undefined'){
+				if(type === 'Bricks'){
+					cols = 4;
+				} else {
+					cols = 2;
+				}
+			}
+			if(typeof(rows) === 'undefined'){
+				if(type === 'Bricks'){
+					rows = 4;
+				} else {
+					rows = 2;
+				}
+			}
+			for(var i = 0; i < rows; i++){
+				for(var j = 0; j < cols; j++){
+					var blockType = Crafty.e(type);					
+					blockType.attr({
+						x: this.x + j * blockType.w,
+						y: this.y + i * blockType.h
+					});
+				}
+			}
 		}
 	});
-	//Block
+	// BaseDefence
+	Crafty.c('BaseDefence', {
+		init: function() {
+			this.requires('2D, Canvas');
+		},
+		place: function (type){
+			var x = Map.grid.tile.width * 5 + Map.grid.tile.width / 2;
+			var y = Map.grid.tile.height * 12 - Map.grid.tile.height / 2 ;
+			//left side
+			if(type === 'Bricks'){
+				cols = 2;
+			} else {
+				cols = 1;
+			}
+			if(type === 'Bricks'){
+				rows = 6;
+			} else {
+				rows = 3;
+			}
+			for(var i = 0; i < rows; i++){
+				for(var j = 0; j < cols; j++){
+					var blockType = Crafty.e(type);					
+					blockType.attr({
+						x: x + j * blockType.w,
+						y: y + i * blockType.h
+					});
+				}
+			}
+			//top
+			var x = Map.grid.tile.width * 6;
+			var y = Map.grid.tile.height * 12 - Map.grid.tile.height / 2 ;
+			if(type === 'Bricks'){
+				cols = 4;
+			} else {
+				cols = 2;
+			}
+			if(type === 'Bricks'){
+				rows = 2;
+			} else {
+				rows = 1;
+			}
+			for(var i = 0; i < rows; i++){
+				for(var j = 0; j < cols; j++){
+					var blockType = Crafty.e(type);					
+					blockType.attr({
+						x: x + j * blockType.w,
+						y: y + i * blockType.h
+					});
+				}
+			}
+			//right side
+			var x = Map.grid.tile.width * 7;
+			var y = Map.grid.tile.height * 12 - Map.grid.tile.height / 2 ;
+			if(type === 'Bricks'){
+				cols = 2;
+			} else {
+				cols = 1;
+			}
+			if(type === 'Bricks'){
+				rows = 6;
+			} else {
+				rows = 3;
+			}
+			for(var i = 0; i < rows; i++){
+				for(var j = 0; j < cols; j++){
+					var blockType = Crafty.e(type);					
+					blockType.attr({
+						x: x + j * blockType.w,
+						y: y + i * blockType.h
+					});
+				}
+			}
+			
+		}
+	});
+	//Bricks
 	Crafty.c('Bricks', {
 		init: function() {
-			this.requires('Actor, Color, Solid')
-				.color('#fff');
+			this.requires('2D, Canvas, Solid, SpriteAnimation, spr_bricks');
+			this.attr({
+				w: 8,
+				h: 8
+			})
+			.animate('Bricks', 0, 0, 0)
+			.animate('Bricks',1,-1);
+		},
+		explode: function (){
+			this.destroy();
 		}
 	});
-	
+	//Steel
+	Crafty.c('Steel', {
+		init: function() {
+			this.requires('2D, Canvas, Solid, SpriteAnimation, spr_steel');
+			this.attr({
+				w: 16,
+				h: 16
+			})
+			.animate('Steel', 0, 0, 0)
+			.animate('Steel',1,-1);
+		}
+	});
 	//Tank component
 	Crafty.c('Tank', {
 		directions: ['up','right','down','left'],
 		currentDirection: 'up',
 		init: function () {
 			var tankComponent = this;
-			tankComponent.requires('Actor, Multiway, Collision, SpriteAnimation, spr_tank1_s1')
+			tankComponent.requires('Block, Canvas, Multiway, Collision, SpriteAnimation, spr_tank1_s1')
 				.attr({
 					w: Map.grid.tile.width,
 					h: Map.grid.tile.height
@@ -138,27 +259,25 @@ define([
 		fire: function(x, y, directionString) {
 			var bulletComponent = this;
 			var offsetX = 0, offsetY = 0;
-			var dir;
 			if (x === undefined || y === undefined || directionString === undefined) {
 				throw 'Bullet function fire: requires x,y and direction params.';
 				return false;
 			} else {
 				if(directionString === 'up'){
-					dir = 'n';
+					bulletComponent.dir = 'n';
 					offsetX = Map.grid.tile.width / 2 - bulletComponent.w / 2;
 				} else if(directionString === 'right'){
-					dir = 'e';
+					bulletComponent.dir = 'e';
 					offsetX = Map.grid.tile.width;
 					offsetY =Map.grid.tile.height / 2 - bulletComponent.h / 2;
 				} else if(directionString === 'down'){
-					dir = 's';
+					bulletComponent.dir = 's';
 					offsetX = Map.grid.tile.width / 2 - bulletComponent.w / 2;
 					offsetY = Map.grid.tile.height;
 				} else if(directionString === 'left'){
-					dir = 'w';
+					bulletComponent.dir = 'w';
 					offsetY = Map.grid.tile.height / 2 - bulletComponent.h / 2;
 				}
-				
 				//place bullet at position
 				bulletComponent.attr({
 					x: (x + offsetX), 
@@ -170,39 +289,32 @@ define([
 				//start moving to direction
 				//TODO: better flying of the bullet
 				setInterval(function (){
-					bulletComponent.move(dir,6);
+					bulletComponent.move(bulletComponent.dir,6);
 				}, 20);
 				return this;
 			}
 		},
 		explodeOnSolids: function () {
-			var bulletComponent = this;
-			this.onHit('Bricks', function(obj){
-				if(typeof obj[0].obj.destroy === 'function'){
-					obj[0].obj.destroy();
-					bulletComponent.explode();
-				}
-			});
 			this.onHit('Solid', this.explode);
 			return this;
 		},
 		explode: function (){
-			Crafty.e('Explosion').explode(this.x,this.y);
+			Crafty.e('Explosion').explode(this.x,this.y,this.dir);
 			this.destroy();
 		}
 	});
 	//small explosion
 	Crafty.c('Explosion', {
 		init: function () {
-			this.requires('2D, Canvas, SpriteAnimation, spr_small_explosion')
+			this.requires('2D, Canvas, Collision, SpriteAnimation, spr_small_explosion')
 			.attr({
 				w: 32,
-				h: 32				
+				h: 32
 			})
 			//setup animation
 			.animate('Explode', 0, 0, 0);
 		},
-		explode: function (x,y) {
+		explode: function (x,y,dir) {
 			var explosion = this;
 			var offsetX = explosion.w / 2 - 4;
 			var offsetY = explosion.h / 2 - 4;
@@ -215,17 +327,77 @@ define([
 			setTimeout(function (){
 				explosion.destroy();
 			},100);
+			//create impact
+			Crafty.e('ExplosionImpact').impact(x,y,dir);
+		}
+	});
+	//impact of the explosion
+	Crafty.c('ExplosionImpact', {
+		init: function () {
+			this.requires('2D, Canvas, Collision');
+		},
+		impact: function (x,y,dir) {
+			var impactObject = this;
+			var impactWidth = 32;
+			var impactHeight = 6;
+			//orientation of the impact
+			if(dir === 'e' || dir === 'w'){
+				this.attr({
+					w: impactHeight,
+					h: impactWidth
+				});
+			} else {
+				this.attr({
+					w: impactWidth,
+					h: impactHeight
+				});
+			}
+			this.attr({
+				x: (x - impactObject.w/2 + 4),
+				y: (y - impactObject.h/2 + 4)
+			});
+			this.onHit('Solid', function (solidObjs){
+				if(solidObjs.length > 0){
+					for(var i = 0; i < solidObjs.length; i++){
+						if(typeof(solidObjs[i].obj.explode) === 'function'){
+							solidObjs[i].obj.explode();
+						}
+					}
+				}
+			});
+			setTimeout(function(){
+				impactObject.destroy();
+			}, 100);
 		}
 	});
 	//Item to be collected
 	Crafty.c('Item', {
 		init: function() {
-			this.requires('Actor, Color')
+			this.requires('Block, Color')
 					.color('rgb(170, 125, 40)');
 		},
 		collect: function() {
 			this.destroy();
 			Crafty.trigger('ItemCollected', this);
+		}
+	});
+	
+	//Base
+	Crafty.c('Base', {
+		init: function() {
+			console.log('init base');
+			this.requires('2D, Canvas, Grid, Solid, SpriteAnimation, spr_base');
+			this.attr({
+				w: 32,
+				h: 32
+			})
+			.animate('Base', 0, 0, 0)
+			.animate('BaseHit', 0, 1, 0)
+			.animate('Base',1,-1);
+		},
+		explode: function (){
+			this.animate('BaseHit',1,-1);
+			//TODO: game over
 		}
 	});
 	//TODO: extend before returning
