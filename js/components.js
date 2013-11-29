@@ -7,8 +7,10 @@ define([
 	'map'
 ], function($, Crafty,Map) {
 	var Config = {
-		fireKey: 32 //Space Key
+		fireKey: 32, //Space Key
+		tunnelWidth: Map.grid.tile.width / 2
 	}
+	Config.maxOffsetFromTunnel = Config.tunnelWidth / 2;
 	//Border for the map
 	//TODO: maybe a smarter desicion is possible
 	Crafty.c('Borders', {
@@ -192,7 +194,7 @@ define([
 			tankComponent.bind('NewDirection', function(data) {
 				if (data.x > 0) {
 					 // start animation
-					tankComponent.animate('TankMoveRight',1,-1);
+					tankComponent.animate('TankMoveRight',1,-1);				
 					//set current direction of the tank
 					tankComponent.currentDirection = tankComponent.directions[1];
 					console.log('move right');
@@ -214,6 +216,7 @@ define([
 				} else {
 					console.log('stop');
 				}
+				tankComponent.easeChangeDirection();
 			});
 			//bind bullet firing
 			Crafty.bind('KeyDown', function (e){
@@ -221,6 +224,24 @@ define([
 					tankComponent.fire();
 				}
 			});
+		},
+		
+		easeChangeDirection: function () {
+			if (this.currentDirection === 'right' || this.currentDirection === 'left') {
+				var mod = this.y % Config.tunnelWidth;
+				if (mod < Config.maxOffsetFromTunnel) {
+					this.y = this.y - mod;
+				} else if (mod > (Config.tunnelWidth - Config.maxOffsetFromTunnel)) {
+					this.y = this.y + (Config.tunnelWidth - mod);
+				}
+			} else if (this.currentDirection === 'down' || this.currentDirection === 'up') {
+				var mod = this.x % Config.tunnelWidth;
+				if (mod < Config.maxOffsetFromTunnel) {
+					this.x = this.x - mod;
+				} else if (mod > (Config.tunnelWidth - Config.maxOffsetFromTunnel)) {
+					this.x = this.x + (Config.tunnelWidth - mod);
+				}
+			}
 		},
 		// Registers a stop-movement function to be called when
 		//  this entity hits an entity with the "Solid" component
