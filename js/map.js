@@ -46,7 +46,7 @@ define([
 		//TODO: load X level
 		
 		//level 1
-		var currentStage = 1;
+		var currentStage = 2;
 		require(['stages/stage'+currentStage], function (stage){
 			stage.init();
 		});

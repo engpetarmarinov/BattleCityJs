@@ -160,6 +160,18 @@ define([
 		}
 	});
 	//Steel
+	Crafty.c('Trees', {
+		init: function() {
+			this.requires('2D, Canvas, SpriteAnimation, spr_trees');
+			this.attr({
+				w: 16,
+				h: 16
+			})
+			.animate('Trees', 0, 0, 0)
+			.animate('Trees',1,-1);
+		}
+	});
+	//Steel
 	Crafty.c('Steel', {
 		init: function() {
 			this.requires('2D, Canvas, Solid, SpriteAnimation, spr_steel');

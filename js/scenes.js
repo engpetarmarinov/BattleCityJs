@@ -26,7 +26,8 @@ define([
 			'img/small-explosion.png',
 			'img/blocks/brick-wall.png',
 			'img/blocks/base.png',
-			'img/blocks/steel-wall.png'
+			'img/blocks/steel-wall.png',
+			'img/blocks/trees.png'
 		], function() {
 			//when loaded	
 			//tank star 1 sprite
@@ -44,6 +45,10 @@ define([
 			//bricks
 			Crafty.sprite(8,8, 'img/blocks/brick-wall.png', {
 				spr_bricks: [0,0]
+			});
+			//trees
+			Crafty.sprite(16,16, 'img/blocks/trees.png', {
+				spr_trees: [0,0]
 			});
 			//base
 			Crafty.sprite(32,32, 'img/blocks/base.png', {
