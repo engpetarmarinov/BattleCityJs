@@ -23,7 +23,7 @@ define([
 		Crafty.e('Block').at(1, 11).place('Bricks');
 		Crafty.e('Block').at(1, 12).place('Bricks');
 		
-		Crafty.e('Block').at(2, 7).place('Bricks');
+		Crafty.e('Block').at(2, 6).place('Bricks');
 		
 		Crafty.e('Block').at(3, 0).place('Steel');
 		Crafty.e('Block').at(3, 1).place('Steel');
