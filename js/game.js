@@ -2,9 +2,10 @@ define([
 	'jquery',
 	'crafty',
 	'components',
+	'tanks',
 	'map',
 	'scenes'
-], function($,Crafty,C,Map,Scenes) {
+], function($,Crafty,C, Tanks, Map,Scenes) {
 	var start = function() {
 		//Init
 		Crafty.init(Map.width(), Map.height());

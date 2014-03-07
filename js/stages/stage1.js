@@ -4,7 +4,10 @@ define([
 	'components'	
 ], function($,Crafty,C) {
 	function init(){
-		
+		//the base
+		require(['stages/base'], function (base){
+			base.init();
+		});
 		Crafty.e('Block').at(0, 7, 0, -16).place('Bricks',4,2);
 		Crafty.e('Block').at(0, 7).place('Steel',2,1);
 		
@@ -78,11 +81,7 @@ define([
 		Crafty.e('Block').at(11, 11).place('Bricks');
 		
 		Crafty.e('Block').at(12, 7, 0, -16).place('Bricks',4,2);
-		Crafty.e('Block').at(12, 7).place('Steel',2,1);
-		//the base
-		require(['stages/base'], function (base){
-			base.init();
-		});
+		Crafty.e('Block').at(12, 7).place('Steel',2,1);		
 	}
 	return {
 		init: init

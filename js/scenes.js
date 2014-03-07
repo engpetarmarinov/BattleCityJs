@@ -81,7 +81,8 @@ define([
 		//init the map
 		Map.init();
 		//Creat tank entity
-		Crafty.e('Tank').at(4, Map.grid.height - 1);
+		Crafty.e('MyTank').at(4, Map.grid.height - 1);
+		//Crafty.e('Tank').at(0,0);
 	});
 	
 	return Crafty;
