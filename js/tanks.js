@@ -19,6 +19,12 @@ define([
 			var tankComponent = this;
 			tankComponent.requires('Tank, Multiway, spr_tank1_s1')
 				.multiway(2, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180});
+			//bind bullet firing
+			Crafty.bind('KeyDown', function (e){
+				if(e.keyCode === Config.fireKey){//space
+					tankComponent.fire();
+				}
+			});
 		},
 	});
 	//Tank component
@@ -31,14 +37,13 @@ define([
 				.attr({
 					w: Map.grid.tile.width,
 					h: Map.grid.tile.height
-				})
-				//.multiway(2, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180})				
+				})								
 				.stopOnSolids()
 				//setup animation
 				.animate('TankMoveUp', 0, 3, 0)
 				.animate('TankMoveRight', 0, 0, 0)
 				.animate('TankMoveDown', 0, 1, 0)
-				.animate('TankMoveLeft', 0, 2, 0);		
+				.animate('TankMoveLeft', 0, 2, 0);
 			
 			// Watch for a change of direction and switch sprites
 			tankComponent.bind('NewDirection', function(data) {
@@ -67,13 +72,7 @@ define([
 					console.log('stop');
 				}
 				tankComponent.easeChangeDirection();
-			});
-			//bind bullet firing
-			Crafty.bind('KeyDown', function (e){
-				if(e.keyCode === Config.fireKey){//space
-					tankComponent.fire();
-				}
-			});
+			});			
 		},
 		
 		easeChangeDirection: function () {
