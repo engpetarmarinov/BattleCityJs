@@ -22,6 +22,7 @@ define([
 		// Crafty loader
 		Crafty.load([
 			'img/tanks/tank1-s1.png',
+			'img/tanks/tank1-s2.png',
 			'img/tanks/bullet.png',
 			'img/small-explosion.png',
 			'img/blocks/brick-wall.png',
@@ -33,6 +34,10 @@ define([
 			//tank star 1 sprite
 			Crafty.sprite(32, 32, 'img/tanks/tank1-s1.png', {
 				spr_tank1_s1: [0, 3]
+			},0,0);
+			//tank star 2 sprite
+			Crafty.sprite(32, 32, 'img/tanks/tank1-s2.png', {
+				spr_tank1_s2: [0, 3]
 			},0,0);
 			//bullet sprite
 			Crafty.sprite(8, 8, 'img/tanks/bullet.png', {
@@ -62,7 +67,7 @@ define([
 			//progress
 		}, function (e) {
 			//uh oh, error loading
-		});		
+		});
 		this.startGame = function() {
 			Crafty.scene('Game');
 		};
@@ -81,9 +86,8 @@ define([
 		//init the map
 		Map.init();
 		//Creat tank entity
-		Crafty.e('MyTank').at(4, Map.grid.height - 1);
-		//Crafty.e('Tank').at(0,0);
+		Crafty.e('MyTank').at(4, Map.grid.height - 1);		
 	});
-	
+		
 	return Crafty;
 });

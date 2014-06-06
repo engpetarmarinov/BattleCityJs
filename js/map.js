@@ -12,7 +12,13 @@ define([
 			height: 32,
 		}
 	};
-	function init(){
+	
+	function loadBots(tanks) {
+		for (var i = 0; i < 13; i += 6) {
+			Crafty.e('Bot').setDirection('down').at(i,0);
+		}
+	}
+	function init() {
 		console.log('init map');
 		//borders		
 		//left border
@@ -49,6 +55,8 @@ define([
 		var currentStage = 2;
 		require(['stages/stage'+currentStage], function (stage){
 			stage.init();
+			//TODO: load bots
+			loadBots(stage.tanks);
 		});
 		
 	}
