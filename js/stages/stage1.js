@@ -3,6 +3,10 @@ define([
 	'crafty',
 	'components'	
 ], function($,Crafty,C) {
+	var tanks = {
+		basic: 18,
+		fast: 2
+	};
 	function init(){
 		//the base
 		require(['stages/base'], function (base){
@@ -84,6 +88,7 @@ define([
 		Crafty.e('Block').at(12, 7).place('Steel',2,1);		
 	}
 	return {
-		init: init
+		init: init,
+		tanks: tanks
 	};
 });

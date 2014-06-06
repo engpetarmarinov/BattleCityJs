@@ -231,7 +231,7 @@ define([
 				x: (x - impactObject.w/2 + 4),
 				y: (y - impactObject.h/2 + 4)
 			});
-			this.onHit('Solid', function (solidObjs){
+			this.onHit('Solid', function (solidObjs) {			
 				if(solidObjs.length > 0){
 					for(var i = 0; i < solidObjs.length; i++){
 						if(typeof(solidObjs[i].obj.explode) === 'function'){
@@ -239,7 +239,7 @@ define([
 						}
 					}
 				}
-			});
+			});			
 			setTimeout(function(){
 				impactObject.destroy();
 			}, 100);
@@ -272,7 +272,19 @@ define([
 		},
 		explode: function (){
 			this.animate('BaseHit',1,-1);
-			//TODO: game over
+			// game over
+			Crafty.e('2D, Canvas, Text')
+				.attr({
+					x: Map.width()/2 - Map.grid.tile.width * 2.5, 
+					y: Map.height()/2
+				})
+				.text('GAME OVER')
+				.textColor('#FFFFFF')
+				.textFont({ size: '24px', weight: 'bold' })
+				.unselectable();
+			setTimeout( function () {
+				Crafty.stop();
+			},200);
 		}
 	});
 	//TODO: extend before returning
