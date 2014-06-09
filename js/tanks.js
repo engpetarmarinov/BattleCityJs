@@ -48,17 +48,7 @@ define([
 				.setSpeed(1)
 				.autochangeDirection()
 				.autoFire()
-				.run();
-			// Damage my tank
-			botComponent.onHit('MyTank',function(Tanks) {
-				if(Tanks.length > 0){
-					for(var i = 0; i < Tanks.length; i++){
-						if(typeof(Tanks[i].obj.damage) === 'function'){
-							Tanks[i].obj.damage();
-						}
-					}
-				}
-			});
+				.run();			
 		},
 		// fire in a random periond of time
 		autoFire: function () {
