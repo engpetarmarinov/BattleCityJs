@@ -9,12 +9,12 @@ define([
 		height: 13,
 		tile: {
 			width: 32,
-			height: 32,
+			height: 32
 		}
 	};
 	
 	function loadBots(tanks) {
-		for (var i = 0; i < 13; i += 6) {
+		for (var i = 0; i < 13; i += 2) {
 			Crafty.e('Bot').setDirection('down').at(i,0);
 		}
 	}
@@ -54,9 +54,10 @@ define([
 		//level 1
 		var currentStage = 2;
 		require(['stages/stage'+currentStage], function (stage){
-			stage.init();
-			//TODO: load bots
+			// load bots
 			loadBots(stage.tanks);
+			// init stage
+			stage.init();
 		});
 		
 	}

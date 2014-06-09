@@ -4,8 +4,27 @@ define([
 	'map'
 ], function($,Crafty,Map) {
 	var Config = {
-		startKey: 32 //Space key
-	}
+		startKey: 32, //Space key
+		pauseKey: 27//Esc key
+	};
+	/**
+	 * End the game
+	 * @returns {undefined}
+	 */
+	Crafty.gameOver = function () {
+		Crafty.e('2D, Canvas, Text')
+			.attr({
+				x: Map.width()/2 - Map.grid.tile.width * 2.5, 
+				y: Map.height()/2
+			})
+			.text('GAME OVER')
+			.textColor('#FFFFFF')
+			.textFont({ size: '24px', weight: 'bold' })
+			.unselectable();
+		setTimeout( function () {
+			Crafty.stop();
+		},200);
+	};
 	//Loading Scene
 	Crafty.scene('Loading', function() {
 		var sceneObject = this;
@@ -75,7 +94,7 @@ define([
 			if(e.keyCode === Config.startKey){
 				sceneObject.startGame();				
 			}
-		}
+		};
 		this.bind('KeyDown', this.pressToStart);
 	}, function() {
 		this.unbind('KeyDown', this.pressToStart);

@@ -260,7 +260,6 @@ define([
 	//Base
 	Crafty.c('Base', {
 		init: function() {
-			console.log('init base');
 			this.requires('2D, Canvas, Grid, Solid, SpriteAnimation, spr_base');
 			this.attr({
 				w: 32,
@@ -273,18 +272,7 @@ define([
 		explode: function (){
 			this.animate('BaseHit',1,-1);
 			// game over
-			Crafty.e('2D, Canvas, Text')
-				.attr({
-					x: Map.width()/2 - Map.grid.tile.width * 2.5, 
-					y: Map.height()/2
-				})
-				.text('GAME OVER')
-				.textColor('#FFFFFF')
-				.textFont({ size: '24px', weight: 'bold' })
-				.unselectable();
-			setTimeout( function () {
-				Crafty.stop();
-			},200);
+			Crafty.gameOver();
 		}
 	});
 	//TODO: extend before returning
