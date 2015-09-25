@@ -5,8 +5,8 @@ define([
 	'tanks',
 	'map',
 	'scenes'
-], function($,Crafty,C, Tanks, Map,Scenes) {
-	var start = function() {
+], function ($, Crafty, C, Tanks, Map, Scenes) {
+	var start = function () {
 		//Init
 		Crafty.init(Map.width(), Map.height());
 		Crafty.background(Map.bgcolor);

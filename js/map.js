@@ -1,8 +1,8 @@
 define([
 	'jquery',
 	'crafty',
-	'components'	
-], function($,Crafty,C) {
+	'components'
+], function ($, Crafty, C) {
 	var bgcolor = '#000';
 	var grid = {
 		width: 13,
@@ -12,10 +12,10 @@ define([
 			height: 32
 		}
 	};
-	
+
 	function loadBots(tanks) {
 		for (var i = 0; i < 13; i += 2) {
-			Crafty.e('Bot').setDirection('down').at(i,0);
+			Crafty.e('Bot').setDirection('down').at(i, 0);
 		}
 	}
 	function init() {
@@ -50,25 +50,25 @@ define([
 			y: 0
 		});
 		//TODO: load X level
-		
+
 		//level 1
 		var currentStage = 2;
-		require(['stages/stage'+currentStage], function (stage){
+		require(['stages/stage' + currentStage], function (stage) {
 			// load bots
 			loadBots(stage.tanks);
 			// init stage
 			stage.init();
 		});
-		
+
 	}
-	
+
 	return {
 		bgcolor: bgcolor,
 		grid: grid,
-		width: function(){
+		width: function () {
 			return grid.width * grid.tile.width;
 		},
-		height: function(){
+		height: function () {
 			return grid.height * grid.tile.height;
 		},
 		init: init

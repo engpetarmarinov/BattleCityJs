@@ -5,14 +5,18 @@ define([
 	'jquery',
 	'crafty',
 	'map'
-], function($, Crafty, Map) {
+], function ($, Crafty, Map) {
 	//local config
 	var Config = {
 		fireKey: 32, //Space Key
+		leftKey: 37,
+		upKey: 38,
+		rightKey: 39,
+		downKey: 40,
 		tunnelWidth: Map.grid.tile.width / 4
 	};
 	Config.maxOffsetFromTunnel = Config.tunnelWidth / 2;
-	
+
 	function convertDirection(direction) {
 		if (direction === 'up') {
 			return 'n';
@@ -24,36 +28,36 @@ define([
 			return 'w';
 		}
 	}
-	
-	function getMovementObjFromDirection(direction,speed) {
+
+	function getMovementObjFromDirection(direction, speed) {
 		if (direction === 'up') {
-			return {x:0,y: -speed};
+			return {x: 0, y: -speed};
 		} else if (direction === 'right') {
-			return {x:speed,y: 0};
+			return {x: speed, y: 0};
 		} else if (direction === 'down') {
-			return {x:0,y: speed};
+			return {x: 0, y: speed};
 		} else if (direction === 'left') {
-			return {x: -speed,y: 0};
+			return {x: -speed, y: 0};
 		}
 	}
-	
+
 	//Bot
 	Crafty.c('Bot', {
-		fireIntervalMax: 3,		
-		_movement: {x:0,y:0},
-		init: function() {
+		fireIntervalMax: 3,
+		_movement: {x: 0, y: 0},
+		init: function () {
 			var botComponent = this;
-			botComponent.requires('Tank')				
-				.setLife(2)
-				.setSpeed(1)
-				.autochangeDirection()
-				.autoFire()
-				.run();			
+			botComponent.requires('Tank')
+					.setLife(2)
+					.setSpeed(1)
+					.autochangeDirection()
+					.autoFire()
+					.run();
 		},
 		// fire in a random periond of time
 		autoFire: function () {
 			var tankComponent = this;
-			this.timeout(function (){
+			this.timeout(function () {
 				if (tankComponent.destroyed === false) {
 					tankComponent.fire();
 				}
@@ -63,46 +67,59 @@ define([
 		},
 		// change direction on hit solid
 		autochangeDirection: function () {
-			this.setDirection(this.directions[Math.floor(Math.random() * this.directions.length)]);			
+			this.setDirection(this.getRandomDirection(this.currentDirection));
 			return this;
 		},
+		// get random direction excluding the given direction
+		getRandomDirection: function (excludeDirection) {
+			var newDirection = this.directions[Math.floor(Math.random() * this.directions.length)];
+			if (newDirection === excludeDirection) {
+				return this.getRandomDirection(excludeDirection);
+			}
+			return newDirection;
+		},
 		run: function () {
-			this._movement = getMovementObjFromDirection(this.currentDirection,this.speedUnit);
-			this.move(convertDirection(this.currentDirection), this.speedUnit);
-			this.timeout(this.run, 5);
+			if (!this.stopped) {
+				this._movement = getMovementObjFromDirection(this.currentDirection, this.speedUnit);
+				this.move(convertDirection(this.currentDirection), this.speedUnit);
+			}
+			this.timeout(this.run, 10);
 			return this;
 		}
 	});
 	//My Tank
 	Crafty.c('MyTank', {
-		init: function() {
-			var tankComponent = this;						
-			tankComponent.requires('Tank, Multiway, spr_tank1_s2')
-					.setSpeed(2)
-					.multiway( this.speedUnit, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180});			
-			//bind bullet firing
-			Crafty.bind('KeyDown', function(e) {
-				if (e.keyCode === Config.fireKey) {//space
+		init: function () {
+			var tankComponent = this;
+//			tankComponent.requires('Tank, Multiway, spr_tank1_s2')
+			tankComponent.requires('Tank, Fourway, spr_tank1_s2')
+				.setSpeed(2)
+//				.multiway(this.speedUnit, {UP_ARROW: -90, DOWN_ARROW: 90, RIGHT_ARROW: 0, LEFT_ARROW: 180});
+				.fourway(this.speedUnit);
+			Crafty.bind('KeyDown', function (e) {
+				//bind bullet firing
+				if (e.keyCode === Config.fireKey) {
 					tankComponent.fire();
-				}
+				}				
 			});
 		}
 	});
 	//Tank component
 	Crafty.c('Tank', {
 		destroyed: false,
+		stopped: false,
 		speedUnit: 1,
 		directions: ['up', 'right', 'down', 'left'],
 		currentDirection: 'up',
 		life: 1,
-		init: function() {
+		init: function () {
 			var tankComponent = this;
 			tankComponent.requires('Block, Solid, Canvas, Collision, SpriteAnimation, spr_tank1_s2')
 					.attr({
 						w: Map.grid.tile.width,
 						h: Map.grid.tile.height
 					})
-					.stopOnSolids()					
+					.stopOnSolids()
 					.slowOnWater()
 					//setup animation
 					.animate('TankMoveUp', 0, 3, 0)
@@ -111,7 +128,7 @@ define([
 					.animate('TankMoveLeft', 0, 2, 0);
 
 			// Watch for a change of direction and switch sprites
-			tankComponent.bind('NewDirection', function(data) {				
+			tankComponent.bind('NewDirection', function (data) {
 				if (data.x > 0) {
 					// start animation
 					tankComponent.animate('TankMoveRight', 1, -1);
@@ -134,7 +151,7 @@ define([
 				}
 			});
 			// destructor
-			tankComponent.bind('Remove',function () {
+			tankComponent.bind('Remove', function () {
 				this.destroyed = true;
 			});
 		},
@@ -143,7 +160,7 @@ define([
 			return this;
 		},
 		// Make changing direction easier
-		easeChangeDirection: function() {
+		easeChangeDirection: function () {			
 			var mod = this.x % Config.tunnelWidth;
 			if (mod <= Config.maxOffsetFromTunnel) {
 				this.x = this.x - mod;
@@ -159,26 +176,32 @@ define([
 		},
 		// Registers a stop-movement function to be called when
 		//  this entity hits an entity with the "Solid" component
-		stopOnSolids: function() {			
+		stopOnSolids: function () {
 			this.onHit('Solid', this.stopMovement);
 			return this;
 		},
 		// Stops the movement
-		stopMovement: function() {
-			this.easeChangeDirection();
-			if (typeof this.autochangeDirection === 'function') {
-				this.autochangeDirection();
+		stopMovement: function () {
+			var tank = this;
+			tank.easeChangeDirection();
+			if (tank.stopped === true) {
+				return;
 			}
-//			this.x = (this.x - this._movement.x);
-//			this.y = (this.y - this._movement.y);
+			tank.stopped = true;
+			if (typeof this.autochangeDirection === 'function') {
+				setTimeout(function () {
+					tank.autochangeDirection();
+					tank.stopped = false;
+				}, 150);
+			}
 		},
 		// slow when crossing water
-		slowOnWater: function() {
+		slowOnWater: function () {
 			this.onHit('Water', this.slowMovement);
 			return this;
 		},
 		// slow movement
-		slowMovement: function() {
+		slowMovement: function () {
 			if (this._movement) {
 				this.x -= (this._movement.x + this._movement.x);
 				this.y -= (this._movement.y + this._movement.y);
@@ -193,8 +216,8 @@ define([
 			this.life = life;
 			return this;
 		},
-		damage: function() {
-			this.life--;			
+		damage: function () {
+			this.life--;
 			console.log('tank damage');
 			if (this.life <= 0) {
 				console.log('tank destroy');
@@ -206,14 +229,14 @@ define([
 			}
 		},
 		//fire a bullet
-		fire: function() {
+		fire: function () {
 			Crafty.e('Bullet').fire(this);
 		}
 	});
 	//Tank Bullet
 	Crafty.c('Bullet', {
 		tank: false,
-		init: function() {
+		init: function () {
 			this.requires('2D, Canvas, Solid, Collision, SpriteAnimation, spr_bullet')
 					.attr({
 						w: 8,
@@ -227,23 +250,25 @@ define([
 					.animate('BulletMoveDown', 0, 2, 0)
 					.animate('BulletMoveLeft', 0, 3, 0);
 		},
-		fire: function(Tank) {
+		fire: function (Tank) {
 			var bulletComponent = this;
 			bulletComponent.tank = Tank;
-			var offsetX = 0, offsetY = 0;
+			var offsetX = 0, offsetY = 0, offset = 4;
 			if (Tank.currentDirection === 'up') {
 				bulletComponent.dir = 'n';
 				offsetX = Map.grid.tile.width / 2 - bulletComponent.w / 2;
+				offsetY = -offset;
 			} else if (Tank.currentDirection === 'right') {
 				bulletComponent.dir = 'e';
-				offsetX = Map.grid.tile.width;
+				offsetX = Map.grid.tile.width + offset;
 				offsetY = Map.grid.tile.height / 2 - bulletComponent.h / 2;
 			} else if (Tank.currentDirection === 'down') {
 				bulletComponent.dir = 's';
 				offsetX = Map.grid.tile.width / 2 - bulletComponent.w / 2;
-				offsetY = Map.grid.tile.height;
+				offsetY = Map.grid.tile.height + offset;
 			} else if (Tank.currentDirection === 'left') {
 				bulletComponent.dir = 'w';
+				offsetX = -offset;
 				offsetY = Map.grid.tile.height / 2 - bulletComponent.h / 2;
 			}
 			//place bullet at position
@@ -256,27 +281,27 @@ define([
 			bulletComponent.animate('BulletMove' + Tank.currentDirection.charAt(0).toUpperCase() + Tank.currentDirection.slice(1), 1, -1);
 			//start moving to direction
 			//TODO: better flying of the bullet
-			setInterval(function() {
+			setInterval(function () {
 				bulletComponent.move(bulletComponent.dir, 6);
 			}, 20);
 			return this;
 		},
-		explodeOnSolids: function() {
+		explodeOnSolids: function () {
 			this.onHit('Solid', this.explode);
 			return this;
 		},
-		damageTanks: function() {
+		damageTanks: function () {
 			this.onHit('Tank', function (bots) {
 				console.log('hit tank');
-				if(bots.length > 0){
-					for(var i = 0; i < bots.length; i++){
-						if(typeof(bots[i].obj.damage) === 'function'){
+				if (bots.length > 0) {
+					for (var i = 0; i < bots.length; i++) {
+						if (typeof (bots[i].obj.damage) === 'function') {
 							if (
-									(this.tank.has('Bot') && !bots[i].obj.has('Bot') )
-									|| 
+									(this.tank.has('Bot') && !bots[i].obj.has('Bot'))
+									||
 									(!this.tank.has('Bot') && bots[i].obj.has('Bot'))
-								) {
-								bots[i].obj.damage();								
+									) {
+								bots[i].obj.damage();
 							}
 						}
 					}
@@ -284,9 +309,9 @@ define([
 			});
 			return this;
 		},
-		explode: function() {
+		explode: function () {
 			Crafty.e('Explosion').explode(this.x, this.y, this.dir);
-			this.timeout( this.destroy, 10);
+			this.timeout(this.destroy, 10);
 		}
 	});
 });

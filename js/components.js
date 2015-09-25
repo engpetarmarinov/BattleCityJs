@@ -5,7 +5,7 @@ define([
 	'jquery',
 	'crafty',
 	'map'
-], function($, Crafty,Map) {	
+], function($, Crafty,Map) {
 	//Border for the map
 	//TODO: maybe a smarter desicion is possible
 	Crafty.c('Borders', {
@@ -23,10 +23,10 @@ define([
 		},
 		// Locate this entity at the given position on the grid
 		at: function(x, y, offsetX, offsetY) {
-			if(offsetX === undefined) offsetX = 0;
-			if(offsetY === undefined) offsetY = 0;
+			if(typeof offsetX === 'undefined') offsetX = 0;
+			if(typeof offsetY === 'undefined') offsetY = 0;
 			if(x === undefined && y === undefined) {
-				return {x: this.x / Map.grid.tile.width + offsetX, y: this.y / Game.map_grid.tile.height + offsetY}
+				return {x: this.x / Map.grid.tile.width + offsetX, y: this.y / Game.map_grid.tile.height + offsetY};
 			} else {
 				this.attr({x: x * Map.grid.tile.width + offsetX, y: y * Map.grid.tile.height + offsetY});
 				return this;

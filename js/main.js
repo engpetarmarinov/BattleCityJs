@@ -10,7 +10,7 @@ require.config({
 	}
 });
 
-require(['game'], function(Game) {
+require(['game'], function (Game) {
 	//start the game
 	Game.start();
 });
