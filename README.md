@@ -1,8 +1,11 @@
 #Battle city
 The popular NES game
+
 ##Demo (in development)
 [Here](http://wildalmighty.github.io/BattleCityJs/)
+
 ##Stages
+
 |Stage			|Difficulty		|Tank Groups|
 |---------------|:-----:|:-------------------------------------------------------------:|
 |Stage 1		|★		|18 Basic Tanks	2 Fast Tanks	N/A				N/A				|
