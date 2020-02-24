@@ -1,10 +1,10 @@
-#Battle city
+# Battle city
 The popular NES game
 
-##Demo (in development)
+## Demo (in development)
 [Here](http://wildalmighty.github.io/BattleCityJs/)
 
-##Stages
+## Stages
 
 |Stage			|Difficulty		|Tank Groups|
 |---------------|:-----:|:-------------------------------------------------------------:|
